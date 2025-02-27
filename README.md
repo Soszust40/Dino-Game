@@ -1,6 +1,6 @@
 # Dino Game AI & Player Mode  
 
-This project is a clone of the popular Google Chrome "No Internet" Dino game, featuring both an AI-powered mode and a manual player mode. The AI is trained using the *EAT (NeuroEvolution of Augmenting Topologies) algorithm, allowing it to learn and improve its ability to navigate obstacles over multiple generations.  
+This project is a clone of the popular Google Chrome "No Internet" Dino game, featuring both an AI-powered mode and a manual player mode. The AI is trained using the NEAT (NeuroEvolution of Augmenting Topologies) algorithm, allowing it to learn and improve its ability to navigate obstacles over multiple generations.  
 
 This project serves as an introduction to AI-driven gameplay and evolutionary algorithms, demonstrating how machine learning techniques can be applied to classic games.
 
