@@ -1,20 +1,57 @@
-import pygame
-import os
-import random
+import os, pygame, random
 
-# Game Variables
 groundHeight = 350
+
+try:
+    cactus_base_img = pygame.image.load(os.path.join("data", "cactus.png"))
+    cactus_big_base_img = pygame.image.load(os.path.join("data", "cactusBig.png"))
+except pygame.error as e:
+    print(f"Error loading cactus images: {e}")
+    cactus_base_img = pygame.Surface((20, 40))
+    cactus_big_base_img = pygame.Surface((40, 40))
+
 
 # Cactus Class
 class Cactus:
     def __init__(self, x):
-        self.image = pygame.image.load(os.path.join("data", "cactus.png"))
-        self.x = x
-        self.y = groundHeight - self.image.get_height()
-        self.vel = 5
+        scale = random.uniform(0.6, 1.0)
+        
+        original_width, original_height = cactus_base_img.get_size()
+        
+        new_width = int(original_width * scale)
+        new_height = int(original_height * scale)
+        
+        self.image = pygame.transform.scale(cactus_base_img, (new_width, new_height))
 
-    def move(self):
-        self.x -= self.vel
+        self.x = x
+        self.y = groundHeight - self.image.get_height() + 20
+
+    def move(self, speed):
+        self.x -= speed
+
+    def draw(self, win):
+        win.blit(self.image, (self.x, self.y))
+
+    def collide(self, dino):
+        dinoMask = pygame.mask.from_surface(dino.image)
+        cactusMask = pygame.mask.from_surface(self.image)
+        offset = (self.x - dino.x, self.y - round(dino.y))
+        return dinoMask.overlap(cactusMask, offset) != None
+
+# Big Cactus Class
+class CactusBig:
+    def __init__(self, x):
+        scale = random.uniform(0.6, 0.8)
+        original_width, original_height = cactus_big_base_img.get_size()
+        new_width = int(original_width * scale)
+        new_height = int(original_height * scale)
+        self.image = pygame.transform.scale(cactus_big_base_img, (new_width, new_height))
+        
+        self.x = x
+        self.y = groundHeight - self.image.get_height() + 20
+
+    def move(self, speed):
+        self.x -= speed
 
     def draw(self, win):
         win.blit(self.image, (self.x, self.y))
@@ -32,12 +69,11 @@ class Bird:
         self.imageIndex = 0
         self.image = self.images[self.imageIndex]
         self.x = x
-        self.y = random.choice([groundHeight - 100, groundHeight - 150])
-        self.vel = 7
+        self.y = random.choice([groundHeight - 100, groundHeight - 150, groundHeight - 60])
         self.flap_count = 0
 
-    def move(self):
-        self.x -= self.vel
+    def move(self, speed):
+        self.x -= speed
         self.flap_count += 1
         if self.flap_count >= 5:
             self.imageIndex = (self.imageIndex + 1) % len(self.images)
