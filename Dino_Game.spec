@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['Dino_Game.py'],
+    ['Bin\\Dino_Game.py'],
     pathex=[],
     binaries=[],
-    datas=[('data', 'data'), ('ArtificialIntelligence.py', '.'), ('config.py', '.'), ('Dino.py', '.'), ('Obstacles.py', '.'), ('Player.py', '.'), ('Scenery.py', '.')],
+    datas=[('Data', 'Data'), ('Bin', 'Bin')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
