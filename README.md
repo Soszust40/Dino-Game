@@ -4,7 +4,7 @@ This project is a clone of the popular Google Chrome "No Internet" Dino game, fe
 
 This project serves as an introduction to AI-driven gameplay and evolutionary algorithms, demonstrating how machine learning techniques can be applied to classic games.
 
-Release Date: Not Released
+Release Date: October 9, 2025
 
 Developer: [Simon Oszust](https://github.com/Soszust40)
 
