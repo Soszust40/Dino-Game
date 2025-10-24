@@ -8,7 +8,7 @@ Release Date: October 9, 2025
 
 Developer: [Simon Oszust](https://github.com/Soszust40)
 
-Languages: English
+Languages: English & Spanish
 
 ## Features  
 - **AI Mode** – Uses NEAT to train an AI that learns to jump over obstacles and improve its survival time.  

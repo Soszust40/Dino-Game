@@ -1,3 +1,4 @@
+from PySide6.QtCore import QCoreApplication
 import neat, os, pygame, random, sys
 import Dino, Obstacles, Scenery, config
 
@@ -18,18 +19,61 @@ def resource_path(relativePath):
     return os.path.join(basePath, relativePath)
 
 def draw_ai_network(win, net):
-    nodePositions = { -1: (200, 60), -2: (200, 120), -3: (200, 180), 0: (350, 90), 1: (350, 150) }
-    nodeLabels = { -1: "DINO Y", -2: "OBST X", -3: "OBST Y", 0: "JUMP", 1: "DUCK" }
-    for node, pos in nodePositions.items():
-        pygame.draw.circle(win, blue if node < 0 else red, pos, 30)
-        font = pygame.font.Font(None, 18)
-        label = font.render(nodeLabels[node], True, black)
-        win.blit(label, (pos[0] - 20, pos[1] - 10))
-    if hasattr(net, 'node_evals'):
-        for nodeID, _, _, _, _, connections in net.node_evals:
-            for inNode, weight in connections:
-                if inNode in nodePositions and nodeID in nodePositions:
-                    pygame.draw.line(WIN, black, nodePositions[inNode], nodePositions[nodeID], 2 if weight > 0 else 1)
+    if not hasattr(net, "node_evals"):
+        return
+    font = pygame.font.Font(None, 20)
+
+    x_positions = { "input": 200, "hidden": 350, "output": 500 }
+    nodeLabels = {
+        -1: QCoreApplication.translate("ArtificialIntelligence", "DINO Y"),
+        -2: QCoreApplication.translate("ArtificialIntelligence", "OBST X"),
+        -3: QCoreApplication.translate("ArtificialIntelligence", "OBST Y"),
+         0: QCoreApplication.translate("ArtificialIntelligence", "JUMP"),
+         1: QCoreApplication.translate("ArtificialIntelligence", "DUCK")}
+    layer_nodes = {"input": [-1, -2, -3], "output": [0, 1], "hidden": []}
+
+    for nodeID, *_ in net.node_evals:
+        if nodeID not in layer_nodes["output"]:
+            layer_nodes["hidden"].append(nodeID)
+
+    node_positions = {}
+    y_spacing = 80
+    for layer, nodes in layer_nodes.items():
+        for i, node in enumerate(nodes):
+            y = 100 + i * y_spacing
+            x = x_positions[layer]
+            node_positions[node] = (x, y)
+
+    # Draw connections
+    for nodeID, _, _, _, _, connections in net.node_evals:
+        for inNode, weight in connections:
+            if inNode in node_positions and nodeID in node_positions:
+                start = node_positions[inNode]
+                end = node_positions[nodeID]
+
+                # Weight-based color and thickness
+                intensity = min(255, int(50 + abs(weight) * 205))
+                color = (0, 200, 0, intensity)
+                thickness = max(1, int(abs(weight) * 3))
+
+                pygame.draw.line(win, color[:3], start, end, thickness)
+
+    # Draw nodes
+    for node, pos in node_positions.items():
+        if node in layer_nodes["input"]:
+            color = (70, 130, 180)
+        elif node in layer_nodes["output"]:
+            color = (220, 20, 60)
+        else:
+            color = (128, 128, 128)
+
+        pygame.draw.circle(win, (0, 0, 0), pos, 28)
+        pygame.draw.circle(win, color, pos, 25)
+
+        label = nodeLabels.get(node, str(node))
+        text = font.render(label, True, (255, 255, 255))
+        text_rect = text.get_rect(center=pos)
+        win.blit(text, text_rect)
 
 def load_high_score():
     try:
@@ -69,7 +113,7 @@ def main(genomes, neat_config):
     winWidth = config.SETTINGS.get("window_width", 800)
     winHeight = config.SETTINGS.get("window_height", 400)
 
-    pygame.display.set_caption("Dino Game - AI")
+    pygame.display.set_caption(QCoreApplication.translate("ArtificialIntelligence", "Dino Game - AI"))
     icon_path = resource_path(os.path.join("Data", "icon.png"))
 
     try:
@@ -90,7 +134,6 @@ def main(genomes, neat_config):
         ge.append(g)
     clock = pygame.time.Clock()
     ground = Scenery.Ground()
-    clouds = Scenery.create_clouds(winWidth)
     obstacles = [Obstacles.Cactus(winWidth)]
     score = 0
     game_speed = config.SETTINGS.get("game_speed", 5)
@@ -108,9 +151,6 @@ def main(genomes, neat_config):
                 break
         if not run:
             break
-        for cloud in clouds:
-            cloud.move()
-            cloud.draw(WIN)
         ground.move(game_speed)
         ground.draw(WIN)
         for obstacle in obstacles:
@@ -131,9 +171,6 @@ def main(genomes, neat_config):
                     obstacles.append(chosen_cactus(winWidth + random.randint(100, 300)))
         
         obstacles = [ob for ob in obstacles if ob.x + ob.image.get_width() > 0]
-        clouds = [cloud for cloud in clouds if cloud.x + cloud.image.get_width() > 0]
-        if len(clouds) < 5:
-            clouds.append(Scenery.Cloud(winWidth + random.randint(50, 200), random.randint(50, 200)))
         for i, dino in enumerate(dinos):
             dino.move()
             ge[i].fitness += 0.1
@@ -168,6 +205,10 @@ def main(genomes, neat_config):
         gen_font = pygame.font.Font(None, 24)
         gen_text = gen_font.render(f"Gen: {current_generation+1}", True, black)
         WIN.blit(gen_text, (10, 10))
+        alive_font = pygame.font.Font(None, 24)
+        alive_string = QCoreApplication.translate("ArtificialIntelligence", "Alive: {0}").format(len(dinos))
+        alive_text = alive_font.render(alive_string, True, black)
+        WIN.blit(alive_text, (10, 30))
         pygame.display.update()
 
     if score > high_score:

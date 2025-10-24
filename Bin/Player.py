@@ -1,3 +1,4 @@
+from PySide6.QtCore import QCoreApplication
 import os, pygame, random, sys
 import Dino, Obstacles, Scenery, config
 pygame.mixer.init()
@@ -55,7 +56,7 @@ def game_loop(show_menu_callback):
     die_sound.set_volume(volume)
     score_sound.set_volume(volume)
 
-    pygame.display.set_caption("Dino Game - Player")
+    pygame.display.set_caption(QCoreApplication.translate("Player", "Dino Game - Player"))
     icon_path = resource_path(os.path.join("Data", "icon.png"))
 
     try:
