@@ -12,7 +12,7 @@ dinoRunImages = [pygame.image.load(resource_path(os.path.join("Data", "dinoRun1.
 dinoDuckImages = [pygame.image.load(resource_path(os.path.join("Data", "dinoDuck1.png"))), pygame.image.load(resource_path(os.path.join("Data", "dinoDuck2.png")))]
 dinoJumpImage = pygame.image.load(resource_path(os.path.join("Data", "dinoRun1.png")))
 dinoDeadImage = pygame.image.load(resource_path(os.path.join("Data", "dino_dead.png")))
-groundHeight = 350
+groundHeight = 370
 
 ## Dino Class
 class Dino:
@@ -26,7 +26,7 @@ class Dino:
         self.x = 50
         self.y = groundHeight - self.image.get_height()
         self.velY = 0
-        self.jumpForce = -18
+        self.jumpForce = -19
         self.gravity = gravity
         self.isJumping = False
         self.isDucking = False
@@ -41,7 +41,7 @@ class Dino:
         return False
 
     def duck(self):
-        if not self.isJumping and not self.is_dead:
+        if  not self.is_dead:
             self.isDucking = True
 
     def unduck(self):
@@ -53,6 +53,9 @@ class Dino:
     def move(self):
         if self.is_dead:
             return
+
+        if self.isJumping and self.isDucking:
+            self.velY += self.gravity * 3 
 
         self.velY += self.gravity
         self.y += self.velY
@@ -72,7 +75,8 @@ class Dino:
         elif self.isJumping:
             self.image = self.jumpImage
         elif self.isDucking:
-            self.image = self.duckImages[self.runIndex // 5]
+            if not self.isJumping:
+                self.image = self.duckImages[self.runIndex // 5]
         else:
             self.image = self.runImages[self.runIndex // 5]
 
