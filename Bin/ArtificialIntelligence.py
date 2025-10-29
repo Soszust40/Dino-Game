@@ -18,6 +18,12 @@ def resource_path(relativePath):
 
     return os.path.join(basePath, relativePath)
 
+## Load Font
+try:
+    font_path = resource_path(os.path.join("Data", "DinoFont.ttf"))
+except pygame.error as e:
+    print(f"Warning: Could not load font assets: {e}")
+
 def draw_ai_network(win, net):
     if not hasattr(net, "node_evals"):
         return
@@ -86,9 +92,10 @@ def save_high_score(score):
     with open(config.HIGHSCORE_AI_FILE, "w") as f:
         f.write(str(int(score)))
 
-def runNeat(show_menu_callback):
-    global WIN, stopTraining, current_generation
+def runNeat():
+    global WIN, stopTraining, errorCode, current_generation
     stopTraining = False
+    errorCode = 0
     config_path = config.NEAT_CONFIG_FILE
     neat_config = neat.config.Config(
         neat.DefaultGenome, neat.DefaultReproduction,
@@ -106,10 +113,10 @@ def runNeat(show_menu_callback):
         generation += 1
     pygame.display.quit()
     WIN = None
-    show_menu_callback()
+    return errorCode
 
 def main(genomes, neat_config):
-    global WIN, stopTraining, current_generation
+    global WIN, stopTraining, errorCode, current_generation
     winWidth = config.SETTINGS.get("window_width", 800)
     winHeight = config.SETTINGS.get("window_height", 400)
 
@@ -179,7 +186,13 @@ def main(genomes, neat_config):
             if obstacle_list:
                 closestObstacle = min(obstacle_list, key=lambda ob: ob.x)
             if closestObstacle:
-                output = nets[i].activate((dino.y, abs(dino.x - closestObstacle.x), closestObstacle.y))
+                try: output = nets[i].activate((dino.y, abs(dino.x - closestObstacle.x), closestObstacle.y))
+                except Exception as error:
+                    if "expected" and "inputs" in str(error).lower():
+                        run = False
+                        stopTraining = True
+                        errorCode = 2
+                        break
                 if output[0] > 0.5:
                     dino.jump()
                 elif output[1] > 0.5:
@@ -199,15 +212,16 @@ def main(genomes, neat_config):
             game_speed = min(game_speed + 0.1, 15)
 
         score_text = f"HI {int(high_score):05d} {int(score):05d}"
-        font = pygame.font.Font(None, 24)
+        try:
+            font = pygame.font.Font(font_path, 12)
+        except Exception as e:
+            font = pygame.font.Font(None, 24)
         text_surface = font.render(score_text, True, black)
         WIN.blit(text_surface, (winWidth - text_surface.get_width() - 10, 10))
-        gen_font = pygame.font.Font(None, 24)
-        gen_text = gen_font.render(f"Gen: {current_generation+1}", True, black)
+        gen_text = font.render(f"Gen: {current_generation+1}", True, black)
         WIN.blit(gen_text, (10, 10))
-        alive_font = pygame.font.Font(None, 24)
         alive_string = QCoreApplication.translate("ArtificialIntelligence", "Alive: {0}").format(len(dinos))
-        alive_text = alive_font.render(alive_string, True, black)
+        alive_text = font.render(alive_string, True, black)
         WIN.blit(alive_text, (10, 30))
         pygame.display.update()
 

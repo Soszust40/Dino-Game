@@ -1,5 +1,5 @@
 ## Dino Game - Oszust Industries
-## Created on: 2-24-25 - Last update: 10-23-25
+## Created on: 2-24-25 - Last update: 10-29-25
 softwareVersion = "v1.1.0"
 systemName, systemBuild = "Dino", "dist"
 
@@ -157,7 +157,12 @@ class StartMenu(QWidget):
 
     def run_ai(self):
         self.main_app.hide()
-        ArtificialIntelligence.runNeat(self.main_app.show)
+        if ArtificialIntelligence.runNeat() == 2:
+            style_backup = self.styleSheet()
+            self.setStyleSheet("")
+            QMessageBox.critical(self, "Error", "The current settings caused a crash.\nPlease restore defaults in Settings and try again.", QMessageBox.Ok)
+            self.setStyleSheet(style_backup)
+        self.main_app.show()
 
     def open_settings(self):
         self.stacked_widget.setCurrentIndex(1)

@@ -15,23 +15,6 @@ def resource_path(relativePath):
 
     return os.path.join(basePath, relativePath)
 
-try:
-    restart_img = pygame.image.load(resource_path(os.path.join("Data", "restart_button.png")))
-    game_over_text_img = pygame.image.load(resource_path(os.path.join("Data", "game_over.png")))
-except pygame.error as e:
-    restart_img = pygame.Surface((50,50), pygame.SRCALPHA)
-    game_over_text_img = pygame.Surface((200, 50), pygame.SRCALPHA)
-    print(f"Warning: Could not load image assets: {e}")
-
-try:
-    jump_sound = pygame.mixer.Sound(resource_path(os.path.join("Data", "jump.wav")))
-    die_sound = pygame.mixer.Sound(resource_path(os.path.join("Data", "die.wav")))
-    score_sound = pygame.mixer.Sound(resource_path(os.path.join("Data", "point.wav")))
-except pygame.error as e:
-    print(f"Warning: Could not load sound assets: {e}")
-    ## Create dummy sound objects if files are missing so the game doesn't crash
-    jump_sound = die_sound = score_sound = pygame.mixer.Sound(buffer=b'')
-
 def load_high_score():
     try:
         with open(config.HIGHSCORE_FILE, "r") as f:
@@ -42,6 +25,24 @@ def load_high_score():
 def save_high_score(score):
     with open(config.HIGHSCORE_FILE, "w") as f:
         f.write(str(int(score)))
+
+## Load Images and Font
+try:
+    restart_img = pygame.image.load(resource_path(os.path.join("Data", "restart_button.png")))
+    font_path = resource_path(os.path.join("Data", "DinoFont.ttf"))
+except pygame.error as e:
+    restart_img = pygame.Surface((50,50), pygame.SRCALPHA)
+    print(f"Warning: Could not load image assets: {e}")
+
+## Load Sounds
+try:
+    jump_sound = pygame.mixer.Sound(resource_path(os.path.join("Data", "jump.wav")))
+    die_sound = pygame.mixer.Sound(resource_path(os.path.join("Data", "die.wav")))
+    score_sound = pygame.mixer.Sound(resource_path(os.path.join("Data", "point.wav")))
+except pygame.error as e:
+    print(f"Warning: Could not load sound assets: {e}")
+    ## Create dummy sound objects if files are missing so the game doesn't crash
+    jump_sound = die_sound = score_sound = pygame.mixer.Sound(buffer=b'')
 
 def game_loop(show_menu_callback):
     global WIN
@@ -161,12 +162,25 @@ def game_loop(show_menu_callback):
             dino.draw(WIN)
 
             score_text = f"HI {int(high_score):05d} {int(score):05d}"
-            font = pygame.font.Font(None, 24)
+            try:
+                font = pygame.font.Font(font_path, 12)
+            except Exception as e:
+                font = pygame.font.Font(None, 24)
             text_surface = font.render(score_text, True, black)
             WIN.blit(text_surface, (winWidth - text_surface.get_width() - 10, 10))
 
             if game_over:
-                WIN.blit(game_over_text_img, (winWidth // 2 - game_over_text_img.get_width() // 2, winHeight // 2 - 50))
+                game_over_text = QCoreApplication.translate("Player", "GAME OVER")
+                try:
+                    font = pygame.font.Font(font_path, 28)
+                except Exception as e:
+                    font = pygame.font.Font(None, 64)
+                text_surface = font.render(game_over_text, True, black)
+                
+                text_rect = text_surface.get_rect(center=(winWidth // 2, winHeight // 2 - 50))
+                pygame.draw.rect(WIN, white, text_rect)
+                WIN.blit(text_surface, text_rect)
+
                 WIN.blit(restart_img, restart_button_rect)
 
             pygame.display.update()

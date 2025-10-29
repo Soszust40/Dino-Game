@@ -1,6 +1,6 @@
 import os, pygame, random, sys
 
-groundHeight = 350
+groundHeight = 370
 
 def resource_path(relativePath):
     try:
@@ -32,7 +32,7 @@ class Cactus:
         self.image = pygame.transform.scale(cactus_base_img, (new_width, new_height))
 
         self.x = x
-        self.y = groundHeight - self.image.get_height() + 20
+        self.y = groundHeight - self.image.get_height()
 
     def move(self, speed):
         self.x -= speed
@@ -56,7 +56,7 @@ class CactusBig:
         self.image = pygame.transform.scale(cactus_big_base_img, (new_width, new_height))
         
         self.x = x
-        self.y = groundHeight - self.image.get_height() + 20
+        self.y = groundHeight - self.image.get_height()
 
     def move(self, speed):
         self.x -= speed
@@ -77,7 +77,7 @@ class Bird:
         self.imageIndex = 0
         self.image = self.images[self.imageIndex]
         self.x = x
-        self.y = random.choice([groundHeight - 80, groundHeight - 130, groundHeight - 180])
+        self.y = random.choice([groundHeight - 100, groundHeight - 150, groundHeight - 200])
 
         self.flap_count = 0
 
