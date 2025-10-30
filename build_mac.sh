@@ -4,6 +4,7 @@ python3 -m PyInstaller Bin/Dino_Game.py \
     --name "Dino Game" \
     --noconfirm \
     --windowed \
+    --onefile \
     --icon="Data/exeIcon.icns" \
     --hidden-import=PySide6 \
     --hidden-import=PySide6.QtCore \
