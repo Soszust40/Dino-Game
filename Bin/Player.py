@@ -129,7 +129,7 @@ def game_loop(show_menu_callback):
                         if not game_over:
                             die_sound.play()
                         game_over = True
-                        dino.is_dead = True
+                        dino.isDead = True
                         if score > high_score:
                             high_score = score
                             save_high_score(high_score)

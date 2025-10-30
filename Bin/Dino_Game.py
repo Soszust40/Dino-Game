@@ -119,11 +119,16 @@ class StartMenu(QWidget):
         self.version_label.setAlignment(Qt.AlignCenter)
         self.version_label.setObjectName("version_label")
         self.version_label.setText(softwareVersion)
-        self.version_label.setCursor(Qt.PointingHandCursor)
         self.version_label.mousePressEvent = self.open_version_page
 
         ## Version Check Color
         self.update_version_color()
+
+        self.play_button.setCursor(Qt.PointingHandCursor)
+        self.ai_button.setCursor(Qt.PointingHandCursor)
+        self.settings_button.setCursor(Qt.PointingHandCursor)
+        self.quit_button.setCursor(Qt.PointingHandCursor)
+        self.version_label.setCursor(Qt.PointingHandCursor)
 
         layout.addWidget(self.logo_label)
         layout.addWidget(self.player_score_label)
@@ -275,7 +280,12 @@ class SettingsMenu(QWidget):
         self.restore_defaults_button = QPushButton(self.tr("Restore Defaults"))
         self.reset_scores_button = QPushButton(self.tr("Reset High Scores"))
         self.back_button = QPushButton(self.tr("Back to Main Menu"))
-        
+
+        self.save_button.setCursor(Qt.PointingHandCursor)
+        self.restore_defaults_button.setCursor(Qt.PointingHandCursor)
+        self.reset_scores_button.setCursor(Qt.PointingHandCursor)
+        self.back_button.setCursor(Qt.PointingHandCursor)
+
         top_button_layout.addWidget(self.restore_defaults_button)
         top_button_layout.addWidget(self.reset_scores_button)
         bottom_button_layout.addWidget(self.save_button)

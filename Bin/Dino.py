@@ -55,7 +55,7 @@ class Dino:
         self.isDead = True
 
     def move(self):
-        if self.is_dead:
+        if self.isDead:
             return
 
         if self.isJumping and self.isDucking:
