@@ -24,7 +24,11 @@ class Dino:
 
         self.image = self.runImages[0]
         self.x = 50
-        self.y = groundHeight - self.image.get_height()
+
+        ## Base Y position
+        self.baseY = groundHeight - self.runImages[0].get_height()
+        self.y = self.baseY
+
         self.velY = 0
         self.jumpForce = -19
         self.gravity = gravity
@@ -41,7 +45,7 @@ class Dino:
         return False
 
     def duck(self):
-        if  not self.is_dead:
+        if not self.is_dead:
             self.isDucking = True
 
     def unduck(self):
@@ -55,13 +59,13 @@ class Dino:
             return
 
         if self.isJumping and self.isDucking:
-            self.velY += self.gravity * 3 
+            self.velY += self.gravity * 3
 
         self.velY += self.gravity
         self.y += self.velY
 
-        if self.y >= groundHeight - self.image.get_height():
-            self.y = groundHeight - self.image.get_height()
+        if self.y >= self.baseY:
+            self.y = self.baseY
             self.velY = 0
             self.isJumping = False
 
@@ -74,10 +78,10 @@ class Dino:
             self.image = self.deadImage
         elif self.isJumping:
             self.image = self.jumpImage
-        elif self.isDucking:
-            if not self.isJumping:
-                self.image = self.duckImages[self.runIndex // 5]
+        elif self.isDucking and not self.isJumping:
+            self.image = self.duckImages[self.runIndex // 5]
         else:
             self.image = self.runImages[self.runIndex // 5]
 
-        win.blit(self.image, (self.x, self.y))
+        height_diff = self.runImages[0].get_height() - self.image.get_height()
+        win.blit(self.image, (self.x, self.y + height_diff))
