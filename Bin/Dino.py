@@ -34,25 +34,25 @@ class Dino:
         self.gravity = gravity
         self.isJumping = False
         self.isDucking = False
-        self.is_dead = False
+        self.isDead = False
         self.runIndex = 0
 
     def jump(self):
-        if not self.isJumping and not self.is_dead:
+        if not self.isJumping and not self.isDead:
             self.velY = self.jumpForce
             self.isJumping = True
             return True
         return False
 
     def duck(self):
-        if not self.is_dead:
+        if not self.isDead:
             self.isDucking = True
 
     def unduck(self):
         self.isDucking = False
 
     def die(self):
-        self.is_dead = True
+        self.isDead = True
 
     def move(self):
         if self.is_dead:
@@ -74,7 +74,7 @@ class Dino:
             self.runIndex = 0
 
     def draw(self, win):
-        if self.is_dead:
+        if self.isDead:
             self.image = self.deadImage
         elif self.isJumping:
             self.image = self.jumpImage

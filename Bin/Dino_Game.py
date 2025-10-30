@@ -1,12 +1,12 @@
 ## Dino Game - Oszust Industries
 ## Created on: 2-24-25 - Last update: 10-29-25
 softwareVersion = "v1.1.0"
-systemName, systemBuild = "Dino", "dist"
+systemName, systemBuild = "Dino Game", "dist"
 
 from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel, QStackedWidget, QFormLayout, QSpinBox, QDoubleSpinBox, QMessageBox, QSlider, QComboBox, QGroupBox, QHBoxLayout
-from PySide6.QtCore import Qt, QEvent, QLocale, QTranslator
-from PySide6.QtGui import QPixmap, QIcon
-import pygame, os, sys
+from PySide6.QtCore import Qt, QEvent, QLocale, QTranslator, QUrl
+from PySide6.QtGui import QDesktopServices, QPixmap, QIcon
+import pygame, os, sys, requests
 import Player, ArtificialIntelligence, config
 translator = QTranslator()
 pygame.init()
@@ -31,6 +31,8 @@ def set_language(app, language_code):
             app.installTranslator(translator)
         else:
             print(f"Could not load translation file: {lang_file} or {lang_path}")
+
+
 
 class StartMenu(QWidget):
     def __init__(self, stacked_widget, main_app):
@@ -116,7 +118,12 @@ class StartMenu(QWidget):
         self.version_label = QLabel()
         self.version_label.setAlignment(Qt.AlignCenter)
         self.version_label.setObjectName("version_label")
-        self.version_label.setText(softwareVersion)  
+        self.version_label.setText(softwareVersion)
+        self.version_label.setCursor(Qt.PointingHandCursor)
+        self.version_label.mousePressEvent = self.open_version_page
+
+        ## Version Check Color
+        self.update_version_color()
 
         layout.addWidget(self.logo_label)
         layout.addWidget(self.player_score_label)
@@ -131,6 +138,17 @@ class StartMenu(QWidget):
 
         self.setLayout(layout)
 
+    def update_version_color(self):
+        try:
+            newestVersion = ((requests.get(f"https://api.github.com/repos/Soszust40/{systemName.replace(" ", "-")}/releases/latest")).json())['tag_name']
+            color = "#ff5555" if newestVersion != softwareVersion else "#ffffff"
+        except:
+            color = "#888888"
+        self.version_label.setStyleSheet(f"color: {color};")
+
+    def open_version_page(self, event):
+        QDesktopServices.openUrl(QUrl(f"https://github.com/Soszust40/{systemName.replace(" ", "-")}/releases"))
+            
     def update_highscores(self):
         try:
             with open(config.HIGHSCORE_FILE, "r") as f:
