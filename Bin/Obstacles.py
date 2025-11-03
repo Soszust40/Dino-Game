@@ -22,6 +22,7 @@ except pygame.error as e:
 ## Cactus Class
 class Cactus:
     def __init__(self, x):
+        self.isBird = False
         scale = random.uniform(0.6, 1.0)
         
         original_width, original_height = cactus_base_img.get_size()
@@ -49,6 +50,7 @@ class Cactus:
 ## Big Cactus Class
 class CactusBig:
     def __init__(self, x):
+        self.isBird = False
         scale = random.uniform(0.6, 0.8)
         original_width, original_height = cactus_big_base_img.get_size()
         new_width = int(original_width * scale)
@@ -73,6 +75,7 @@ class CactusBig:
 ## Bird Class
 class Bird:
     def __init__(self, x):
+        self.isBird = True
         self.images = [pygame.image.load(resource_path(os.path.join("Data", "bird1.png"))), pygame.image.load(resource_path(os.path.join("Data", "bird2.png")))]
         self.imageIndex = 0
         self.image = self.images[self.imageIndex]
