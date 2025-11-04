@@ -54,6 +54,7 @@ class Dino:
         ## Base Y position
         self.baseY = groundHeight - self.runImages[0].get_height()
         self.y = self.baseY
+        self.dino_height = self.y
 
         self.velY = 0
         self.jumpForce = -19
@@ -110,4 +111,5 @@ class Dino:
             self.image = self.runImages[self.runIndex // 5]
 
         height_diff = self.runImages[0].get_height() - self.image.get_height()
+        self.dino_height = self.y + height_diff
         win.blit(self.image, (self.x, self.y + height_diff))

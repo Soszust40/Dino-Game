@@ -388,7 +388,7 @@ class SettingsMenu(QWidget):
     def restore_defaults(self):
         reply = QMessageBox.question(self, 
             self.tr("Restore Defaults"), 
-            self.tr("Are you sure you want to restore all settings to their default values?\nThis won't be saved until you click 'Save Settings'."), 
+            self.tr("Are you sure you want to restore all settings to their default values?") + "\n" + self.tr("This won't be saved until you click 'Save Settings'."),
             QMessageBox.Yes | QMessageBox.No, 
             QMessageBox.No)
 
@@ -424,7 +424,7 @@ class SettingsMenu(QWidget):
         reply = QMessageBox.question(
             self,
             self.tr('Reset High Scores'),
-            self.tr("Are you sure you want to permanently reset both Player and AI high scores?\nThis action cannot be undone."),
+            self.tr("Are you sure you want to permanently reset both Player and AI high scores?") + "\n" + self.tr("This action cannot be undone."),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No
         )

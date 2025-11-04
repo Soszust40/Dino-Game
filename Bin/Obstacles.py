@@ -61,7 +61,7 @@ class Cactus:
     def collide(self, dino):
         dinoMask = pygame.mask.from_surface(dino.image)
         cactusMask = pygame.mask.from_surface(self.image)
-        offset = (self.x - dino.x, self.y - round(dino.y))
+        offset = (self.x - dino.x, self.y - round(dino.dino_height))
         return dinoMask.overlap(cactusMask, offset) != None
 
 ## Big Cactus Class
@@ -89,7 +89,7 @@ class CactusBig:
     def collide(self, dino):
         dinoMask = pygame.mask.from_surface(dino.image)
         cactusMask = pygame.mask.from_surface(self.image)
-        offset = (self.x - dino.x, self.y - round(dino.y))
+        offset = (self.x - dino.x, self.y - round(dino.dino_height))
         return dinoMask.overlap(cactusMask, offset) != None
 
 ## Bird Class
@@ -102,7 +102,7 @@ class Bird:
         self.image = self.images[self.imageIndex]
         x_location = random.uniform(0, 1.0)
         self.x = x + (200 * x_location)
-        self.y = random.choice([groundHeight - 100, groundHeight - 160, groundHeight - 200])
+        self.y = random.choice([groundHeight - 100, groundHeight - 140, groundHeight - 200])
 
         self.flap_count = 0
 
@@ -120,5 +120,5 @@ class Bird:
     def collide(self, dino):
         dinoMask = pygame.mask.from_surface(dino.image)
         birdMask = pygame.mask.from_surface(self.image)
-        offset = (self.x - dino.x, self.y - round(dino.y))
+        offset = (self.x - dino.x, self.y - round(dino.dino_height))
         return dinoMask.overlap(birdMask, offset) != None

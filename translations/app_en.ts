@@ -257,6 +257,26 @@
         <translation>Back to Main Menu</translation>
     </message>
     <message>
+        <location filename="../Bin/Dino_game.py" line="391"/>
+        <source>Are you sure you want to restore all settings to their default values?</source>
+        <translation>Are you sure you want to restore all settings to their default values?</translation>
+    </message>
+    <message>
+        <location filename="../Bin/Dino_game.py" line="391"/>
+        <source>This won&apos;t be saved until you click &apos;Save Settings&apos;.</source>
+        <translation>This won&apos;t be saved until you click &apos;Save Settings&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../Bin/Dino_game.py" line="427"/>
+        <source>Are you sure you want to permanently reset both Player and AI high scores?</source>
+        <translation>Are you sure you want to permanently reset both Player and AI high scores?</translation>
+    </message>
+    <message>
+        <location filename="../Bin/Dino_game.py" line="427"/>
+        <source>This action cannot be undone.</source>
+        <translation>This action cannot be undone.</translation>
+    </message>
+    <message>
         <location filename="../Bin/Dino_game.py" line="229"/>
         <location filename="../Bin/Dino_game.py" line="354"/>
         <source>English</source>
@@ -281,10 +301,9 @@
         <translation>False</translation>
     </message>
     <message>
-        <location filename="../Bin/Dino_game.py" line="391"/>
         <source>Are you sure you want to restore all settings to their default values?
 This won&apos;t be saved until you click &apos;Save Settings&apos;.</source>
-        <translation>Are you sure you want to restore all settings to their default values?\nThis won&apos;t be saved until you click &apos;Save Settings&apos;.</translation>
+        <translation type="vanished">Are you sure you want to restore all settings to their default values?\nThis won&apos;t be saved until you click &apos;Save Settings&apos;.</translation>
     </message>
     <message>
         <location filename="../Bin/Dino_game.py" line="420"/>
@@ -297,10 +316,9 @@ This won&apos;t be saved until you click &apos;Save Settings&apos;.</source>
         <translation>Settings have been reset to default values. Click &apos;Save Settings&apos; to apply them permanently.</translation>
     </message>
     <message>
-        <location filename="../Bin/Dino_game.py" line="427"/>
         <source>Are you sure you want to permanently reset both Player and AI high scores?
 This action cannot be undone.</source>
-        <translation>Are you sure you want to permanently reset both Player and AI high scores?\nThis action cannot be undone.</translation>
+        <translation type="vanished">Are you sure you want to permanently reset both Player and AI high scores?\nThis action cannot be undone.</translation>
     </message>
     <message>
         <location filename="../Bin/Dino_game.py" line="439"/>
