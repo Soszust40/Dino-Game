@@ -20,7 +20,7 @@ def resource_path(relativePath):
 
 ## Load Font
 try:
-    font_path = resource_path(os.path.join("Data", "DinoFont.ttf"))
+    font_path = resource_path(os.path.join("Data", "UI", "DinoFont.ttf"))
 except pygame.error as e:
     print(f"Warning: Could not load font assets: {e}")
 
@@ -119,9 +119,12 @@ def main(genomes, neat_config):
     global WIN, stopTraining, errorCode, current_generation
     winWidth = config.SETTINGS.get("window_width", 800)
     winHeight = config.SETTINGS.get("window_height", 400)
+    Dino.load_dino_images("Day")
+    Obstacles.load_obstacle_images("Day")
+    Scenery.load_scenery_images("Day")
 
     pygame.display.set_caption(QCoreApplication.translate("ArtificialIntelligence", "Dino Game - AI"))
-    icon_path = resource_path(os.path.join("Data", "icon.png"))
+    icon_path = resource_path(os.path.join("Data", "UI", "icon.png"))
 
     try:
         icon = pygame.image.load(icon_path)
@@ -167,7 +170,7 @@ def main(genomes, neat_config):
         if not obstacles or obstacles[-1].x < winWidth - 200 - random.randint(150, 450):
             cactus_types = [Obstacles.Cactus, Obstacles.CactusBig]
 
-            if score < config.SETTINGS["bird_spawn_score"]:
+            if score < config.SETTINGS["bird_spawn_score"] or config.SETTINGS["bird_spawn_score"] == -1:
                 chosen_cactus = random.choice(cactus_types)
                 obstacles.append(chosen_cactus(winWidth + random.randint(100, 300)))
             else:

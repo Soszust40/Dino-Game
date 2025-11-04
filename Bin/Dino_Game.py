@@ -1,5 +1,5 @@
 ## Dino Game - Oszust Industries
-## Created on: 2-24-25 - Last update: 10-29-25
+## Created on: 2-24-25 - Last update: 11-4-25
 softwareVersion = "v1.1.0"
 systemName, systemBuild = "Dino Game", "dist"
 
@@ -31,8 +31,6 @@ def set_language(app, language_code):
             app.installTranslator(translator)
         else:
             print(f"Could not load translation file: {lang_file} or {lang_path}")
-
-
 
 class StartMenu(QWidget):
     def __init__(self, stacked_widget, main_app):
@@ -85,7 +83,7 @@ class StartMenu(QWidget):
         layout.setContentsMargins(50, 50, 50, 50)
 
         self.logo_label = QLabel()
-        logo_path = resource_path(os.path.join("Data", "logo.png"))
+        logo_path = resource_path(os.path.join("Data", "UI", "logo.png"))
         try:
             pixmap = QPixmap(logo_path)
             self.logo_label.setPixmap(pixmap.scaledToWidth(400, Qt.SmoothTransformation))
@@ -231,9 +229,13 @@ class SettingsMenu(QWidget):
         self.language.addItem(self.tr("English"), "English")
         self.language.addItem(self.tr("Spanish"), "Spanish")
         self.music_volume = QSlider(Qt.Horizontal)
+        self.day_cycle = QComboBox()
+        self.day_cycle.addItem(self.tr("Auto"), "Auto")
+        self.day_cycle.addItem(self.tr("Day"), "Day")
+        self.day_cycle.addItem(self.tr("Night"), "Night")
         self.game_speed = QSpinBox(); self.game_speed.setRange(1, 20)
         self.gravity = QDoubleSpinBox(); self.gravity.setRange(0.1, 5.0); self.gravity.setSingleStep(0.1)
-        self.bird_spawn_score = QSpinBox(); self.bird_spawn_score.setRange(0, 1000)
+        self.bird_spawn_score = QSpinBox(); self.bird_spawn_score.setRange(-1, 10000)
         window_size_layout = QHBoxLayout()
         window_size_layout.addWidget(self.window_width)
         window_size_layout.addWidget(self.window_height)
@@ -241,6 +243,7 @@ class SettingsMenu(QWidget):
         self.game_layout.addRow(self.tr("Window Size:"), window_size_layout)
         self.game_layout.addRow(self.tr("Language:"), self.language)
         self.game_layout.addRow(self.tr("Music Volume:"), self.music_volume)
+        self.game_layout.addRow(self.tr("Daylight Cycle:"), self.day_cycle)
         self.game_layout.addRow(self.tr("Initial Game Speed:"), self.game_speed)
         self.game_layout.addRow(self.tr("Dino Gravity:"), self.gravity)
         self.game_layout.addRow(self.tr("Bird Spawn Score:"), self.bird_spawn_score)
@@ -324,9 +327,10 @@ class SettingsMenu(QWidget):
         self.game_layout.itemAt(0, QFormLayout.LabelRole).widget().setText(self.tr("Window Size:"))
         self.game_layout.itemAt(1, QFormLayout.LabelRole).widget().setText(self.tr("Language:"))
         self.game_layout.itemAt(2, QFormLayout.LabelRole).widget().setText(self.tr("Music Volume:"))
-        self.game_layout.itemAt(3, QFormLayout.LabelRole).widget().setText(self.tr("Initial Game Speed:"))
-        self.game_layout.itemAt(4, QFormLayout.LabelRole).widget().setText(self.tr("Dino Gravity:"))
-        self.game_layout.itemAt(5, QFormLayout.LabelRole).widget().setText(self.tr("Bird Spawn Score:"))
+        self.game_layout.itemAt(3, QFormLayout.LabelRole).widget().setText(self.tr("Daylight Cycle:"))
+        self.game_layout.itemAt(4, QFormLayout.LabelRole).widget().setText(self.tr("Initial Game Speed:"))
+        self.game_layout.itemAt(5, QFormLayout.LabelRole).widget().setText(self.tr("Dino Gravity:"))
+        self.game_layout.itemAt(6, QFormLayout.LabelRole).widget().setText(self.tr("Bird Spawn Score:"))
     
         self.ai_layout.itemAt(0, QFormLayout.LabelRole).widget().setText(self.tr("Population Size:"))
         self.ai_layout.itemAt(1, QFormLayout.LabelRole).widget().setText(self.tr("Fitness Threshold:"))
@@ -355,6 +359,20 @@ class SettingsMenu(QWidget):
             self.language.setCurrentIndex(index)
         
         self.language.blockSignals(False)
+
+        current_daycycle_key = self.day_cycle.currentData()
+        self.day_cycle.blockSignals(True)
+        self.day_cycle.clear()
+        self.day_cycle.addItem(self.tr("Day"), "Day")
+        self.day_cycle.addItem(self.tr("Night"), "Night")
+        self.day_cycle.addItem(self.tr("Auto"), "Auto")
+        
+        index = self.day_cycle.findData(current_daycycle_key)
+        if index != -1:
+            self.day_cycle.setCurrentIndex(index)
+            
+        self.day_cycle.blockSignals(False)
+
         current_reset_key = self.reset_on_extinction.currentData()
         self.reset_on_extinction.blockSignals(True) 
         self.reset_on_extinction.clear()
@@ -380,6 +398,8 @@ class SettingsMenu(QWidget):
             index = self.language.findData("English")
             if index != -1: self.language.setCurrentIndex(index)
             self.music_volume.setValue(50)
+            index = self.day_cycle.findData("Auto")
+            if index != -1: self.day_cycle.setCurrentIndex(index)
             self.game_speed.setValue(5)
             self.gravity.setValue(1.0)
             self.bird_spawn_score.setValue(300)
@@ -486,6 +506,7 @@ class SettingsMenu(QWidget):
         config.SETTINGS["window_height"] = self.window_height.value()
         config.SETTINGS["language"] = self.language.currentData()
         config.SETTINGS["music_volume"] = self.music_volume.value()
+        config.SETTINGS["daylight_cycle"] = self.day_cycle.currentData()
         config.SETTINGS["game_speed"] = self.game_speed.value()
         config.SETTINGS["gravity"] = self.gravity.value()
         config.SETTINGS["max_generations"] = self.max_generations.value()
@@ -515,6 +536,11 @@ class SettingsMenu(QWidget):
         index = self.language.findData(lang_key)
         if index != -1:
             self.language.setCurrentIndex(index)
+
+        daylight_key = config.SETTINGS.get("daylight_cycle", "Auto")
+        daylight_index = self.day_cycle.findData(daylight_key)
+        if daylight_index != -1:
+            self.day_cycle.setCurrentIndex(daylight_index)
 
         self.window_width.setValue(config.SETTINGS.get("window_width", 800))
         self.window_height.setValue(config.SETTINGS.get("window_height", 400))
@@ -557,7 +583,7 @@ class SettingsMenu(QWidget):
 class MainApp(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowIcon(QIcon(resource_path(os.path.join("Data", "icon.png"))))
+        self.setWindowIcon(QIcon(resource_path(os.path.join("Data", "UI", "icon.png"))))
         self.setWindowTitle(self.tr("Google Dino AI Menu"))
         self.resize(550, 600)
         

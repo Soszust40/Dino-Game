@@ -26,6 +26,7 @@ SETTINGS = {
     "window_width": 800,
     "window_height": 400,
     "music_volume": 50,
+    "daylight_cycle": "Auto",
     "game_speed": 5,
     "gravity": 1.0,
     "max_generations": 50,

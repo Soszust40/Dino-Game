@@ -1,5 +1,7 @@
 import os, pygame, random, sys
 
+ground_img = None
+cloud_img = None
 groundHeight = 350
 
 def resource_path(relativePath):
@@ -10,14 +12,26 @@ def resource_path(relativePath):
 
     return os.path.join(basePath, relativePath)
 
-ground_img = pygame.image.load(resource_path(os.path.join("Data", "ground.png")))
-cloud_img = pygame.image.load(resource_path(os.path.join("Data", "cloud.png")))
+def load_scenery_images(mode="Day"):
+    global ground_img, cloud_img
+    suffix = "_night" if mode == "Night" else ""
+    
+    try:
+        ground_img = pygame.image.load(resource_path(os.path.join("Data", f"ground{suffix}.png")))
+        cloud_img = pygame.image.load(resource_path(os.path.join("Data", f"cloud{suffix}.png")))
+    except pygame.error as e:
+        print(f"Error loading scenery images for {mode} mode: {e}. Falling back to Day mode.")
+        ## Fallback
+        ground_img = pygame.image.load(resource_path(os.path.join("Data", "ground.png")))
+        cloud_img = pygame.image.load(resource_path(os.path.join("Data", "cloud.png")))
 
 class Ground:
-    WIDTH = ground_img.get_width()
     
     def __init__(self):
+        if ground_img is None: 
+            load_scenery_images()
         self.image = ground_img
+        self.WIDTH = self.image.get_width()
         self.y = groundHeight
         self.x1 = 0
         self.x2 = self.WIDTH
@@ -36,6 +50,8 @@ class Ground:
 
 class Cloud:
     def __init__(self, x, y):
+        if cloud_img is None:
+            load_scenery_images()
         self.image = cloud_img
         self.x = x
         self.y = y

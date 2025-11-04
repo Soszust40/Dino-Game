@@ -1,5 +1,11 @@
 import os, pygame, sys
 
+dinoRunImages = []
+dinoDuckImages = []
+dinoJumpImage = None
+dinoDeadImage = None
+groundHeight = 370
+
 def resource_path(relativePath):
     try:
         basePath = sys._MEIPASS
@@ -8,15 +14,35 @@ def resource_path(relativePath):
 
     return os.path.join(basePath, relativePath)
 
-dinoRunImages = [pygame.image.load(resource_path(os.path.join("Data", "dinoRun1.png"))), pygame.image.load(resource_path(os.path.join("Data", "dinoRun2.png")))]
-dinoDuckImages = [pygame.image.load(resource_path(os.path.join("Data", "dinoDuck1.png"))), pygame.image.load(resource_path(os.path.join("Data", "dinoDuck2.png")))]
-dinoJumpImage = pygame.image.load(resource_path(os.path.join("Data", "dinoRun1.png")))
-dinoDeadImage = pygame.image.load(resource_path(os.path.join("Data", "dino_dead.png")))
-groundHeight = 370
+def load_dino_images(mode="Day"):
+    global dinoRunImages, dinoDuckImages, dinoJumpImage, dinoDeadImage
+    suffix = "_night" if mode == "Night" else ""
+    
+    try:
+        dinoRunImages = [
+            pygame.image.load(resource_path(os.path.join("Data", f"dinoRun1{suffix}.png"))),
+            pygame.image.load(resource_path(os.path.join("Data", f"dinoRun2{suffix}.png")))
+        ]
+        dinoDuckImages = [
+            pygame.image.load(resource_path(os.path.join("Data", f"dinoDuck1{suffix}.png"))),
+            pygame.image.load(resource_path(os.path.join("Data", f"dinoDuck2{suffix}.png")))
+        ]
+        dinoJumpImage = pygame.image.load(resource_path(os.path.join("Data", f"dinoRun1{suffix}.png")))
+        dinoDeadImage = pygame.image.load(resource_path(os.path.join("Data", f"dino_dead{suffix}.png")))
+    except pygame.error as e:
+        print(f"Error loading dino images for {mode} mode: {e}. Falling back to Day mode.")
+        ## Fallback
+        dinoRunImages = [pygame.image.load(resource_path(os.path.join("Data", "dinoRun1.png"))), pygame.image.load(resource_path(os.path.join("Data", "dinoRun2.png")))]
+        dinoDuckImages = [pygame.image.load(resource_path(os.path.join("Data", "dinoDuck1.png"))), pygame.image.load(resource_path(os.path.join("Data", "dinoDuck2.png")))]
+        dinoJumpImage = pygame.image.load(resource_path(os.path.join("Data", "dinoRun1.png")))
+        dinoDeadImage = pygame.image.load(resource_path(os.path.join("Data", "dino_dead.png")))
 
 ## Dino Class
 class Dino:
     def __init__(self, gravity=1.0):
+        if not dinoRunImages:
+            load_dino_images()
+
         self.runImages = dinoRunImages
         self.duckImages = dinoDuckImages
         self.jumpImage = dinoJumpImage
