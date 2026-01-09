@@ -1,6 +1,6 @@
 ## Dino Game - Oszust Industries
-## Created on: 2-24-25 - Last update: 11-4-25
-softwareVersion = "v1.1.0"
+## Created on: 2-24-25 - Last update: 1-8-25
+softwareVersion = "v1.1.1"
 systemName, systemBuild = "Dino Game", "dist"
 
 from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel, QStackedWidget, QFormLayout, QSpinBox, QDoubleSpinBox, QMessageBox, QSlider, QComboBox, QGroupBox, QHBoxLayout
@@ -449,6 +449,7 @@ class SettingsMenu(QWidget):
                 fitness_threshold     = {self.fitness_threshold.value()}
                 pop_size              = {self.population_size.value()}
                 reset_on_extinction   = {self.reset_on_extinction.currentData()}
+                no_fitness_termination = False
                 [DefaultGenome]
                 activation_default      = {self.activation_function.currentText()}
                 activation_mutate_rate  = 0.0
@@ -490,6 +491,17 @@ class SettingsMenu(QWidget):
                 weight_mutate_power     = 0.5
                 weight_mutate_rate      = {self.mutation_rate.value()}
                 weight_replace_rate     = 0.1
+                single_structural_mutation = false
+                structural_mutation_surer = default
+                bias_init_type = gaussian
+                response_init_type = gaussian
+                weight_init_type = gaussian
+                enabled_rate_to_true_add = 0.0
+                enabled_rate_to_false_add = 0.0
+                conn_add_rate           = 0.5
+                conn_delete_rate        = 0.5
+                node_add_rate           = 0.2
+                node_delete_rate        = 0.2
                 [DefaultSpeciesSet]
                 compatibility_threshold = {self.compatibility_threshold.value()}
                 [DefaultStagnation]
@@ -499,6 +511,7 @@ class SettingsMenu(QWidget):
                 [DefaultReproduction]
                 elitism              = {self.elitism.value()}
                 survival_threshold   = {self.survival_threshold.value()}
+                min_species_size = 1
                 """
 
     def save_settings(self):

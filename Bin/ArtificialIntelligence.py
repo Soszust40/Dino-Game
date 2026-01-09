@@ -97,10 +97,16 @@ def runNeat():
     stopTraining = False
     errorCode = 0
     config_path = config.NEAT_CONFIG_FILE
-    neat_config = neat.config.Config(
-        neat.DefaultGenome, neat.DefaultReproduction,
-        neat.DefaultSpeciesSet, neat.DefaultStagnation, config_path
-    )
+    try:
+        neat_config = neat.config.Config(
+            neat.DefaultGenome, neat.DefaultReproduction,
+            neat.DefaultSpeciesSet, neat.DefaultStagnation, config_path
+        )
+    except Exception as error:
+        if ("missing" and "required" in str(error).lower()):
+            stopTraining = True
+            errorCode = 2
+            return 2
     p = neat.Population(neat_config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
@@ -191,7 +197,7 @@ def main(genomes, neat_config):
             if closestObstacle:
                 try: output = nets[i].activate((dino.y, abs(dino.x - closestObstacle.x), closestObstacle.y))
                 except Exception as error:
-                    if "expected" and "inputs" in str(error).lower():
+                    if ("expected" and "inputs" in str(error).lower()):
                         run = False
                         stopTraining = True
                         errorCode = 2
